@@ -11,7 +11,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.hes.demo'
+group = 'com.hes.test'
 version = '1.0'
 
 repositories {
