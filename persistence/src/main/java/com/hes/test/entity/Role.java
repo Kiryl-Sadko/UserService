@@ -1,22 +1,24 @@
 package com.hes.test.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Role implements Serializable {
+public class Role implements Model {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String role;
+    private Long id;
 
-    @OneToMany(mappedBy = "role")
+    private String name;
+
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     private Set<UserAccount> userAccounts;
 
     public Role() {
@@ -25,8 +27,8 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "Role{" +
-                "role='" + role + '\'' +
-                ", userAccounts=" + userAccounts +
+                "id=" + id +
+                ", role='" + name + '\'' +
                 '}';
     }
 
@@ -35,19 +37,35 @@ public class Role implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role1 = (Role) o;
-        return Objects.equals(role, role1.role);
+        return Objects.equals(id, role1.id) && Objects.equals(name, role1.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(role);
+        return Objects.hash(id, name);
     }
 
-    public String getRole() {
-        return role;
+    public Long getId() {
+        return id;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<UserAccount> getUserAccounts() {
+        return userAccounts;
+    }
+
+    public void setUserAccounts(Set<UserAccount> userAccounts) {
+        this.userAccounts = userAccounts;
     }
 }
