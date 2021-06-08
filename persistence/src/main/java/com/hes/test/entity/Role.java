@@ -1,16 +1,16 @@
 package com.hes.test.entity;
 
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-public class Role implements Model {
+@javax.persistence.Entity
+public class Role implements Entity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Role implements Model {
     private String name;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
-    private Set<UserAccount> userAccounts;
+    private Set<UserAccount> userAccounts = new HashSet<>();
 
     public Role() {
     }
@@ -67,5 +67,9 @@ public class Role implements Model {
 
     public void setUserAccounts(Set<UserAccount> userAccounts) {
         this.userAccounts = userAccounts;
+    }
+
+    public void linkWithUserAccount(UserAccount userAccount) {
+        userAccounts.add(userAccount);
     }
 }

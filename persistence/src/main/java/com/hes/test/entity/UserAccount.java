@@ -4,7 +4,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,9 +14,9 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "user")
-public class UserAccount implements Model {
+public class UserAccount implements Entity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,10 +37,10 @@ public class UserAccount implements Model {
     private Role role;
 
     @Column(name = "is_active")
-    private boolean status;
+    private boolean isActive;
 
     @Column(name = "created_date")
-    private LocalDateTime registrationDate;
+    private LocalDateTime registrationDateTime;
 
     public UserAccount() {
     }
@@ -55,8 +54,8 @@ public class UserAccount implements Model {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", role=" + role +
-                ", status=" + status +
-                ", registrationDate=" + registrationDate +
+                ", isActive=" + isActive +
+                ", registrationDate=" + registrationDateTime +
                 '}';
     }
 
@@ -121,19 +120,19 @@ public class UserAccount implements Model {
         this.role = role;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setIsActive(boolean active) {
+        this.isActive = active;
     }
 
-    public LocalDateTime getRegistrationDate() {
-        return registrationDate;
+    public LocalDateTime getRegistrationDateTime() {
+        return registrationDateTime;
     }
 
-    public void setRegistrationDate(LocalDateTime registrationDate) {
-        this.registrationDate = registrationDate;
+    public void setRegistrationDateTime(LocalDateTime registrationDateTime) {
+        this.registrationDateTime = registrationDateTime;
     }
 }
