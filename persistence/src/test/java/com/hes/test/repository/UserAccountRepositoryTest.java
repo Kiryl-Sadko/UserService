@@ -61,9 +61,9 @@ class UserAccountRepositoryTest {
         userAccount.setFirstName("firstName");
         userAccount.setLastName("lastName");
         userAccount.setPassword("123");
-        userAccount.setStatus(true);
+        userAccount.setIsActive(true);
         userAccount.setRole(buildRole());
-        userAccount.setRegistrationDate(LocalDateTime.now());
+        userAccount.setRegistrationDateTime(LocalDateTime.now());
         return userAccount;
     }
 
