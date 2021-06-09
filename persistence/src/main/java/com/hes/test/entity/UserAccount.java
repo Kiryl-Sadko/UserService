@@ -33,7 +33,7 @@ public class UserAccount implements Entity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @Cascade(CascadeType.SAVE_UPDATE)
-    @JoinColumn(name = "role")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @Column(name = "is_active")
