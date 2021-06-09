@@ -3,8 +3,8 @@
 Service implements working witn user accounts.
 
 User account has two roles:
-    - ADMIN: can execute CRUD operation with userAccounts;
-    - USER: can read list of users/user details.
+    ADMIN: can execute CRUD operation with userAccounts;
+    USER: can read list of users/user details.
 
 Techlogies:
     - Gradle
