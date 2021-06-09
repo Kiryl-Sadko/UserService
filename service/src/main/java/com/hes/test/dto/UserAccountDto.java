@@ -14,7 +14,7 @@ public class UserAccountDto implements Dto {
     private String userName;
 
     @Size(min = 3, max = 16)
-    @Pattern(regexp = "^([a-zA-Z0-9]+)$")
+    @Pattern(regexp = "^[A-Za-z0-9]+$")
     private String password;
 
     @Size(min = 1, max = 16)

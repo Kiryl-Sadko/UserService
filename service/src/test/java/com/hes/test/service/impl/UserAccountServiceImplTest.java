@@ -44,6 +44,12 @@ class UserAccountServiceImplTest {
     }
 
     @Test
+    void shouldFindUserAccountByUserName() {
+        UserAccountDto userAccountDto = service.findByUserName("Kiryl");
+        assertEquals("Kiryl", userAccountDto.getUserName());
+    }
+
+    @Test
     void shouldThrowEntityNotFoundException() {
         assertThrows(EntityNotFoundException.class, () -> service.findById(10L));
     }

@@ -1,10 +1,10 @@
 package com.hes.test.service.impl;
 
 import com.hes.test.converter.UserAccountConverter;
+import com.hes.test.dto.RoleDto;
 import com.hes.test.dto.UserAccountDto;
 import com.hes.test.entity.Role;
 import com.hes.test.entity.UserAccount;
-import com.hes.test.exception.InvalidDtoException;
 import com.hes.test.exception.SuchEntityAlreadyExistException;
 import com.hes.test.repository.UserAccountRepository;
 import com.hes.test.service.UserAccountService;
@@ -13,16 +13,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
@@ -42,13 +39,13 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public List<UserAccountDto> findAll(Pageable pageable) {
         List<UserAccount> userAccounts = repository.findAll(pageable).getContent();
-        return getUserAccountDtoList(userAccounts);
+        return convertToDtoList(userAccounts);
     }
 
     @Override
     public List<UserAccountDto> findAll() {
         List<UserAccount> userAccounts = repository.findAll();
-        return getUserAccountDtoList(userAccounts);
+        return convertToDtoList(userAccounts);
     }
 
     @Override
@@ -80,8 +77,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             id = this.save(dto);
             return findById(id);
         }
-
-        validate(dto, validator);
         UserAccount userAccountFromDto = converter.convertToEntity(dto);
         updateRelationWithRole(userAccountFromDto);
         UserAccount savedUserAccount = repository.save(userAccountFromDto);
@@ -90,7 +85,6 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Long save(UserAccountDto dto) {
-        validate(dto, validator);
         UserAccount userAccountFromDto = converter.convertToEntity(dto);
         updateRelationWithRole(userAccountFromDto);
         checkForExistenceInDB(userAccountFromDto);
@@ -100,33 +94,32 @@ public class UserAccountServiceImpl implements UserAccountService {
         return savedUserAccount.getId();
     }
 
-    private List<UserAccountDto> getUserAccountDtoList(List<UserAccount> userAccounts) {
-        List<UserAccountDto> resultList = new ArrayList<>();
-        userAccounts.forEach(userAccount -> resultList
-                .add(converter.convertToDto(userAccount)));
-        return resultList;
+
+    @Override
+    public UserAccountDto findByUserName(String userName) {
+        Optional<UserAccount> optionalUserAccountByUserName = repository.findByUserName(userName);
+        UserAccount userAccount = optionalUserAccountByUserName.orElseThrow(EntityNotFoundException::new);
+        return converter.convertToDto(userAccount);
     }
+
+    @Override
+    public List<UserAccountDto> findByUserNameStartsWith(String userName, Pageable pageable) {
+        List<UserAccount> userAccounts = repository.findByUserNameStartingWith(userName, pageable).getContent();
+        return convertToDtoList(userAccounts);
+    }
+
+    @Override
+    public List<UserAccountDto> findByRole(String roleName, Pageable pageable) {
+        Role role = convertToRole(roleName);
+        List<UserAccount> content = repository.findByRole(role, pageable).getContent();
+        return convertToDtoList(content);
+    }
+
 
     private void updateRelationWithRole(UserAccount userAccount) {
         if (userAccount.getRole() != null) {
             Role role = userAccount.getRole();
             role.linkWithUserAccount(userAccount);
-        }
-    }
-
-    private void validate(UserAccountDto dto, Validator validator) {
-        Set<ConstraintViolation<UserAccountDto>> violations = validator.validate(dto);
-        if (!CollectionUtils.isEmpty(violations)) {
-            StringBuilder causes = new StringBuilder();
-            violations.stream().iterator().forEachRemaining(violation -> causes
-                    .append("'")
-                    .append(violation.getPropertyPath().toString())
-                    .append("' ")
-                    .append(violation.getMessage())
-                    .append(";"));
-            String message = MessageFormat.format("The userAccount is invalid, check causes: {0}", causes);
-            LOGGER.error(message);
-            throw new InvalidDtoException(message);
         }
     }
 
@@ -141,5 +134,19 @@ public class UserAccountServiceImpl implements UserAccountService {
                 throw new SuchEntityAlreadyExistException(message);
             }
         }
+    }
+
+    private List<UserAccountDto> convertToDtoList(List<UserAccount> userAccountList) {
+        List<UserAccountDto> userAccountDtos = new ArrayList<>();
+        userAccountList.forEach(userAccount -> userAccountDtos.add(converter.convertToDto(userAccount)));
+        return userAccountDtos;
+    }
+
+    private Role convertToRole(String roleName) {
+        RoleDto roleDto = RoleDto.fromString(roleName);
+        Role role = new Role();
+        role.setId(roleDto.getId());
+        role.setName(roleDto.getName());
+        return role;
     }
 }

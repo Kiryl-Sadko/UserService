@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `user_db`.`user`
     `password`     VARCHAR(100) NOT NULL,
     `first_name`   VARCHAR(30)  NOT NULL,
     `last_name`    VARCHAR(30)  NOT NULL,
-    `role`         VARCHAR(10)  NOT NULL,
+    `role_id`      VARCHAR(10)  NOT NULL,
     `is_active`    TINYINT      NOT NULL DEFAULT 1,
     `created_date` TIMESTAMP    NOT NULL,
     PRIMARY KEY (`id`),
