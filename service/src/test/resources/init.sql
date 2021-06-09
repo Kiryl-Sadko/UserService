@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `user_db`.`user`
 (
     30
 ) NOT NULL,
-    `role` VARCHAR
+    `role_id` VARCHAR
 (
     10
 ) NOT NULL,

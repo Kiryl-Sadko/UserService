@@ -17,18 +17,18 @@ public enum RoleDto {
         this.name = name;
     }
 
+    public static RoleDto fromString(String role) {
+        return Arrays.stream(RoleDto.values())
+                .filter(roleDto -> roleDto.getName().equalsIgnoreCase(role))
+                .findFirst()
+                .orElse(USER);
+    }
+
     public static RoleDto formRole(Role role) {
-        Long id = role.getId();
-
-        if (Arrays.stream(RoleDto.values())
-                .anyMatch(roleDto -> roleDto.getId().equals(id))) {
-
-            return Arrays.stream(RoleDto.values())
-                    .filter(roleDto -> roleDto.getId().equals(id))
-                    .findFirst()
-                    .orElseThrow();
-        }
-        return USER;
+        return Arrays.stream(RoleDto.values())
+                .filter(roleDto -> roleDto.getId().equals(role.getId()))
+                .findFirst()
+                .orElse(USER);
     }
 
     public Long getId() {
